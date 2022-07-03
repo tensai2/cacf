@@ -1,7 +1,10 @@
 package configs
 
 import (
+	"fmt"
+
 	"github.com/spf13/viper"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -13,8 +16,9 @@ func CreatePostgres(config *viper.Viper) *gorm.DB {
 	user := config.GetString("POSTGRES_USER")
 	password := config.GetString("POSTGRES_PASSWORD")
 	dbname := config.GetString("POSTGRES_DBNAME")
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Bangkok", host, user, password, dbname, port)
 	//create gorm db
-	db, err := gorm.Open("postgres", "host="+host+" port="+port+" user="+user+" dbname="+dbname+" password="+password)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
